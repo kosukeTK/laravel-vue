@@ -14,8 +14,13 @@ services:
     working_dir: /work
   db:
     build: ./infra/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: laravel_local
+    ports:
+      - 3306:3306
     volumes:
       - db-store:/var/lib/mysql
-
+      
 volumes:
   db-store:
