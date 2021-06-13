@@ -9,7 +9,7 @@ class AlbumController extends Controller
 {
     public function upload(Request $request)
     {
-        //    $files = $request->file;
+        //    $files = $request->file;  
         $files = $request->file('file');
         foreach ($files as $file) {
             $file_name = $file->getClientOriginalName();

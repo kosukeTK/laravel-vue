@@ -2,10 +2,10 @@ import imageCompression from "browser-image-compression";
 
 export default {
   // アップロードされた画像ファイルを取得
-  async getCompressImageFileAsync(file) {
+  async getCompressImageFileAsync(file, size) {
     const options = {
       maxSizeMB: 1, // 最大ファイルサイズ
-      maxWidthOrHeight: 200 // 最大画像幅もしくは高さ
+      maxWidthOrHeight: size // 最大画像幅もしくは高さ
     };
     try {
       // 圧縮画像の生成

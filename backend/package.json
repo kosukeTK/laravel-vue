@@ -10,7 +10,9 @@
         "production": "mix --production"
     },
     "devDependencies": {
+        "@types/webpack-env": "^1.16.0",
         "@vue/compiler-sfc": "^3.0.5",
+        "autoprefixer": "^10.2.5",
         "axios": "^0.21",
         "bootstrap": "^4.0.0",
         "browser-sync": "^2.26.14",
@@ -19,18 +21,27 @@
         "laravel-mix": "^6.0.0-beta.17",
         "leaflet": "^1.7.1",
         "lodash": "^4.17.19",
+        "mix-tailwindcss": "^1.3.0",
         "moment": "^2.29.1",
         "popper.js": "^1.12",
-        "postcss": "^8.1.14",
+        "postcss": "^8.2.9",
         "resolve-url-loader": "^2.3.1",
         "sass": "^1.20.1",
         "sass-loader": "^8.0.0",
+        "tailwind": "^4.0.0",
+        "tailwindcss": "^2.1.1",
+        "ts-loader": "^9.1.1",
+        "typescript": "^4.2.4",
         "vue": "^3.0.5",
         "vue-loader": "^16.0.0-beta.9"
     },
     "dependencies": {
+        "@headlessui/vue": "^1.1.1",
+        "@heroicons/vue": "^1.0.1",
+        "bootstrap-icons": "^1.3.0",
         "browser-image-compression": "^1.0.14",
         "vue-router": "^4.0.3",
-        "vuex": "^4.0.0-rc.2"
+        "vuex": "^4.0.0-rc.2",
+        "vuex-persistedstate": "^4.0.0-beta.3"
     }
 }

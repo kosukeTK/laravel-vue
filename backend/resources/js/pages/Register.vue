@@ -1,69 +1,161 @@
 <template>
-    <div>
-        <div class="alert alert-danger" v-if="state.error && !success">
-            <p>登録できなーい！</p>
-        </div>
-        <div class="alert alert-success" v-if="state.success">
-            <p>登録完了！</p>
-        </div>
-        <div>
-            <div class="form-group" :class="{ 'has-error': state.error && state.errMsg.username }">
-                <label for="name">Name</label>
-                <input type="text" id="name" class="form-control" v-model="state.name" required>
-                <span class="help-block" v-if="state.error && state.errMsg.name">{{ state.errMsg.name }}</span>
+  <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <Load :show="state.show"></Load>
+    <div class="max-w-md w-full space-y-8">
+      <div>
+        <img class="mx-auto h-12 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="Workflow" />
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
+      </div>
+      <div class="mt-8 space-y-6">
+        <div class="rounded-md -space-y-px">
+          <div class="my-4">
+            <label for="name" class="block text-sm font-medium text-gray-700">名前</label>
+            <input type="text" v-model="state.profile.name" id="name" autocomplete="name" class="w-48 px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500 block shadow-sm sm:text-sm border-2 border-gray-300 rounded-lg" />
+            <div v-show="state.form.name_err" class="my-2">
+              <div v-for="(e_name, index) in state.form.name_err" :key="index" class="block text-sm font-medium text-red-700">
+                {{ e_name }}
+              </div>
             </div>
-            <div class="form-group" v-bind:class="{ 'has-error': state.error && state.errMsg.email }">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" class="form-control" placeholder="gavin.belson@hooli.com" v-model="state.email" required>
-                <span class="help-block" v-if="state.error && state.errMsg.email">{{ state.errMsg.email }}</span>
+          </div>
+
+          <div class="my-4">
+            <label for="email" class="block text-sm font-medium text-gray-700">メールアドレス</label>
+            <input type="text" v-model="state.profile.email" id="email" autocomplete="email" class="w-full px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500 block shadow-sm sm:text-sm border-2 border-gray-300 rounded-lg" />
+            <div v-show="state.form.email_err" class="my-2">
+              <div v-for="(e_mail, index) in state.form.email_err" :key="index" class="block text-sm font-medium text-red-700">
+                {{ e_mail }}
+              </div>
             </div>
-            <div class="form-group" v-bind:class="{ 'has-error': state.error && state.errMsg.password }">
-                <label for="password">Password</label>
-                <input type="password" id="password" class="form-control" v-model="state.password" required>
-                <span class="help-block" v-if="state.error && state.errMsg.password">{{ state.errMsg.password }}</span>
+          </div>
+
+          <div class="my-4">
+            <label for="prefectures" class="block text-sm font-medium text-gray-700">都道府県</label>
+            <select id="prefectures" @change="citySelect()" v-model="state.profile.prefectures" autocomplete="prefectures" class="w-36 mt-1 block py-2 px-3 border-2 border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+              <option v-for="prefecture in state.pref_city" :key="prefecture.id" :value="prefecture.name">
+                {{ prefecture.name }}
+              </option>
+            </select>
+            <div v-show="state.form.prefectures_err" class="my-2">
+              <div v-for="(e_prefectures, index) in state.form.prefectures_err" :key="index" class="block text-sm font-medium text-red-700">
+                {{ e_prefectures }}
+              </div>
             </div>
-            <button class="btn btn-default" @click="register()">Submit</button>
+          </div>
+
+          <div class="my-4">
+            <label for="city" class="block text-sm font-medium text-gray-700">市町村</label>
+            <select id="city" v-model="state.profile.city" autocomplete="city" class="w-36 mt-1 block py-2 px-3 border-2 border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+              <option v-for="(city, index) in state.citys" :key="index" :value="city.city">
+                {{ city.city }}
+              </option>
+            </select>
+            <div v-show="state.form.city_err" class="my-2">
+              <div v-for="(e_city, index) in state.form.city_err" :key="index" class="block text-sm font-medium text-red-700">
+                {{ e_city }}
+              </div>
+            </div>
+          </div>
+
+          <div class="my-4">
+            <label for="password" class="block text-sm font-medium text-gray-700">パスワード</label>
+            <input type="password" v-model="state.profile.password" id="password" autocomplete="password" class="w-full px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500 block shadow-sm sm:text-sm border-2 border-gray-300 rounded-lg" />
+            <div v-show="state.form.password_err" class="my-2">
+              <div v-for="(e_password, index) in state.form.password_err" :key="index" class="block text-sm font-medium text-red-700">
+                {{ e_password }}
+              </div>
+            </div>
+          </div>
+
+          <button @click="register()" type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+              <LockClosedIcon class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" aria-hidden="true" />
+            </span>
+            Sign in
+          </button>
         </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
-import { reactive } from 'vue';
+import { reactive, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import axios from 'axios';
-import jwtToken from '../helpers/jwt_token.js';
+import { LockClosedIcon } from '@heroicons/vue/solid';
+import prefCity from '../../../storage/app/private/pref_city.json';
+import Load from '../components/Load.vue';
+
 export default {
-    setup() {
-        const state = reactive({
-            name: null,
-            email: null,
-            password: null,
-            success: false,
-            error: false,
-            errMsg: []
+  components: {
+    LockClosedIcon,
+    Load,
+  },
+
+  setup() {
+    const state = reactive({
+      show: false,
+      profile: {
+        name: '',
+        email: '',
+        prefectures: '',
+        city: '',
+        password: '',
+      },
+      form: {
+        name_err: [],
+        email_err: [],
+        prefectures_err: [],
+        city_err: [],
+        password_err: [],
+      },
+      pref_city: [],
+      citys: [],
+    });
+
+    const router = useRouter();
+
+    const citySelect = () => {
+      state.pref_city.map((prefs) => {
+        if (prefs.name === state.profile.prefectures) {
+          state.citys = prefs.city;
+        }
+      });
+      console.log(state.city);
+    };
+
+    const register = async () => {
+      try {
+        state.show = true;
+        const response = await axios.post('register/reg', {
+          profile: state.profile,
         });
+        state.show = false;
+        if (response.data.sucess) {
+          router.push({ name: 'top' });
+        } else {
+          state.form = {};
+          state.form.name_err = response.data.validator.name;
+          state.form.email_err = response.data.validator.email;
+          state.form.prefectures_err = response.data.validator.prefectures;
+          state.form.city_err = response.data.validator.city;
+          state.form.password_err = response.data.validator.password;
+        }
+      } catch (error) {
+        state.show = false;
+        console.log(error.data);
+      }
+    };
 
-        const register = async() => {
-            try {
-                const response = await axios.post('register/reg', {
-                    name: state.name,
-                    email: state.email,
-                    password: state.password
-                })
-//                const response = await axios.get('register')
-                //    jwtToken.setItem(response.data.token);
-                console.log(response.data);
-               // const response2 = await axios.get('register')
-               // console.log(response2.data);
-            } catch (error) {
-                    state.errMsg = error.data
-                    console.log(error.data)
-            }
-        };
+    onMounted(() => {
+      state.pref_city = prefCity;
+    });
 
-        return {
-            state,
-            register
-        };
-    }
-}
+    return {
+      state,
+      citySelect,
+      register,
+    };
+  },
+};
 </script>

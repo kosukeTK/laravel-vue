@@ -1,71 +1,191 @@
 <template>
-<div class="containter" style="padding-bottom: 80px;">
-    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#" @click="topPage()">Navbar</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">  
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#" 
-                    @click="albumPage()"
-                    >探す<span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" @click="registerPage()">新規登録</a>
-                    <!-- <router-link to="/register">新規登録</router-link> -->
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" @click="loginPage()">ログイン</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" @click="todoPage()">TODO</a>
-                </li>
-            </ul>       
+  <div class="bg-gray-800">
+    <Load :show="state.show"></Load>
+    <header class="container mx-auto text-white">
+      <div class="px-48 h-16 flex justify-between items-center">
+        <a href="#" @click="topPage()" class="transition duration-500 ease-in-out transform hover:scale-110 navbar-brand d-flex align-items-center hover:text-white">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+            <circle cx="12" cy="13" r="4"></circle>
+          </svg>
+          <strong class="text-xl">Album</strong>
+        </a>
+        <div>
+          <button class="md:hidden" @click="state.isOpen = !state.isOpen">
+            <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24">
+              <path v-show="state.isOpen" d="M24 6h-24v-4h24v4zm0 4h-24v4h24v-4zm0 8h-24v4h24v-4z" />
+              <path v-show="!state.isOpen" d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z" />
+            </svg>
+          </button>
         </div>
-    </nav>
-</div>
-    <!-- <img :src="'/storage/スクリーンショット (1).png'"> -->
+        <div :class="state.isOpen ? 'hidden' : 'block'">
+          <div class="md:flex md:justify-between md:items-center space-x-8">
+            <div class="border-b md:border-none">
+              <a href="#" @click="albumPage()" class="transition duration-500 ease-in-out transform hover:scale-110 block text-base px-8 py-2 hover:bg-gray-600 hover:text-white rounded">探す</a>
+            </div>
+            <div class="border-b md:border-none">
+              <a href="#" @click="todoPage()" class="transition duration-500 ease-in-out transform hover:scale-110 block text-base px-4 py-2 hover:bg-gray-600 hover:text-white rounded">TODOリスト</a>
+            </div>
+            <div v-if="state.loginState == false" class="border-b md:border-none">
+              <a href="#" @click="registerPage()" class="transition duration-500 ease-in-out transform hover:scale-110 block text-base px-8 py-2 hover:bg-gray-600 hover:text-white rounded">会員登録</a>
+            </div>
+            <div v-if="state.loginState == false" class="border-b md:border-none">
+              <a href="#" @click="loginPage()" class="transition duration-500 ease-in-out transform hover:scale-110 block text-base px-8 py-2 hover:bg-gray-600 hover:text-white rounded">ログイン</a>
+            </div>
+            <div v-if="state.loginState == false" class="my-4">
+              <button type="button" @click="simpleLogin()" class="transition ease-in-out duration-500 transform hover:scale-110 inline-flex items-center px-2 py-2 ml-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-red-600 hover:bg-red-500 focus:border-red-700 active:bg-red-700">簡単ログイン</button>
+            </div>
+            <div v-else class="my-4">
+              <!-- <button @click="state.loginState=false" class="px-4 py-2 ml-2 text-base bg-red-500 hover:bg-red-400 hover:text-white rounded">ログアウト</button> -->
+              <Menu as="div" class="ml-3 relative">
+                <div>
+                  <MenuButton class="max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                    <span class="sr-only">Open user menu</span>
+                    <div v-if="state.photo_path">
+                      <img class="h-12 w-12 rounded-full" :src="state.photo_path" />
+                    </div>
+                  </MenuButton>
+                </div>
+                <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
+                  <MenuItems class="z-10 origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <MenuItem v-for="item in profile" :key="item" v-slot="{ active }">
+                      <a href="#" @click="userInfo(item)" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">{{ item }}</a>
+                    </MenuItem>
+                  </MenuItems>
+                </transition>
+              </Menu>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+  </div>
+  <!-- <img :src="'/storage/スクリーンショット (1).png'"> -->
 </template>
 
 <script>
-import {useRouter} from 'vue-router';
-//import {ref} from 'vue';
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
+import { useRouter } from 'vue-router';
+import store from '../store/index';
+import axios from 'axios';
+import { ref, reactive, onMounted } from 'vue';
+import Load from '../components/Load.vue';
+
+const profile = ['Profile', 'Sign out'];
+
 export default {
+  components: {
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuItems,
+    Load,
+  },
 
-    setup(){
-        const router = useRouter();
+  setup() {
+    const state = reactive({
+      guest: [],
+      loginId: '',
+      loginName: '',
+      loginState: false,
+      isOpen: false,
+      show: false,
+      photo_path: '',
+    });
 
-        const topPage = () => {
-            router.push({name: 'top'})
+    // const loading = ref(false);
 
-        };
+    const router = useRouter();
 
-        const loginPage = () => {
-            router.push({name: 'login'})
-        };
+    const topPage = () => {
+      router.push({ name: 'top' });
+    };
 
-        const albumPage = () => {
-            router.push({name: 'album'})
-        };
+    const loginPage = () => {
+      router.push({ name: 'login' });
+    };
 
-        const todoPage = () => {
-            router.push({name: 'todo'})
-        };
+    const albumPage = () => {
+      router.push({ name: 'album' });
+    };
 
-        const registerPage = () => {
-            router.push({name: 'register'})
-        };
+    const todoPage = () => {
+      router.push({ name: 'todo' });
+    };
 
-        return{
-            topPage,
-            loginPage,
-            albumPage,
-            todoPage,
-            registerPage
-        };
-    }
-}
+    const registerPage = () => {
+      router.push({ name: 'register' });
+    };
+
+    const userInfo = (item) => {
+      switch (item) {
+        case 'Sign out':
+          state.loginState = false;
+          sessionStorage.removeItem('loginStates');
+          router.push({ name: 'top' });
+          break;
+        case 'Profile':
+          router.push({ name: 'profile' });
+          break;
+      }
+    };
+
+    const simpleLogin = () => {
+      state.show = true;
+      axios
+        .get('simpleLogin', {
+          params: {
+            id: 1,
+          },
+        })
+        .then((response) => {
+          state.guest = response.data.guest;
+          store.commit('loginInfo', {
+            loginId: state.guest[0].id,
+            loginName: state.guest[0].name,
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      state.show = false;
+      state.loginState = true;
+    };
+
+    onMounted(() => {
+      if (store.getters.getLoginInfo.loginName.length > 0) {
+        state.loginState = true;
+        state.loginId = store.getters.getLoginInfo.loginId;
+        state.loginName = store.getters.getLoginInfo.loginName;
+        state.show = true;
+        axios
+          .get('/profile/get', {
+            params: {
+              id: state.loginId,
+            },
+          })
+          .then((response) => {
+            state.photo_path = response.data.photo_path;
+            state.show = false;
+          })
+          .catch((error) => {
+            state.show = false;
+            console.log(error.data);
+          });
+      }
+    });
+
+    return {
+      state,
+      topPage,
+      loginPage,
+      albumPage,
+      todoPage,
+      registerPage,
+      userInfo,
+      simpleLogin,
+      profile,
+    };
+  },
+};
 </script>

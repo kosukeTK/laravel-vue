@@ -45,7 +45,7 @@
             <button class="clear-completed" v-if="state.hasCompleted" @click="deleteTodo('')">Clear completed</button>
         </footer>
     </section>
-    <Child1 :msg="state.msg" @change-message="changeMessage" />
+    <Child1 :message="state.msg" @change-message="changeMessage" />
     <p>{{ state.msg }}</p>
 </div>
 </template>

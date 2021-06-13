@@ -14,8 +14,8 @@ class JsonController extends Controller
 
         $filePath = 'private/N03-19_23_190101.geojson';
         $fileName = 'N03-19_23_190101.geojson';
-        $mineType = Storage::mimeType($filePath);
-        $headers = [['Content-Type' => $mineType]];
+        $mimeType = Storage::mimeType($filePath);
+        $headers = [['Content-Type' => $mimeType]];
         return Storage::download($filePath, $fileName, $headers);
     }
 }

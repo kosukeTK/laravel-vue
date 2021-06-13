@@ -1,30 +1,49 @@
 
+import { createStore } from 'vuex'
+import createPersistedState from 'vuex-persistedstate'
 
-//import { createStore } from 'vuex';
-//import auth from "./modules/auth.js";
+export default createStore({
+  state: {
+    // count: 0,
+    loginState: false,
+    loginId: '',
+    loginName: ''
+  },
+  mutations: {
+    // increment(state){
+    //   state.count += 1
+    // },
+    // decrement(state){
+    //   state.count -= 1
+    // },
+    loginInfo(state, payload) {
+      state.loginState  = payload.loginState
+      state.loginId     = payload.loginId
+      state.loginName   = payload.loginName
+    }
+  },
+  actions: {
+    // increment({ commit }) {
+    //   commit('increment')
+    // }      
+  },
+  getters: {
+    getLoginInfo: state => {
+      return state
+    }
+  },
+  modules: {
 
-// export const store = createStore({
-// 	modules: {
-// 		auth
-// 	},
-// 	strict: true
-// });
-
-// export default store
-
-// export default {
-//     state: {
-//         user:{
-//             name: null,
-//             email: null
-//         }
-//     },
-
-//     getUser() {
-//         return state.user
-//     },
-
-//     setUser(user) {
-//         state.user = user
-//     }
-// }
+  },
+  plugins: [createPersistedState(
+    {
+      key: 'loginStates',
+      paths: [
+        'loginState',
+        'loginId',
+        'loginName'
+      ],
+      storage: window.sessionStorage
+    }
+  )]
+})

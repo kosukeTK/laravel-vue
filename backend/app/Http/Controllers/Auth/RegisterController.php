@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class RegisterController extends Controller
 {
@@ -38,7 +39,7 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+        //       $this->middleware('guest');
     }
 
     /**
@@ -49,20 +50,27 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
+        $profile = $data['profile'];
         $rules = [
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'prefectures' => ['required'],
+            'city' => ['required'],
             'password' => ['required', 'string', 'min:8'],
         ];
 
         $message = [
-            'name.require' => '名前を入力してください！',
-            'email.unique' => 'emailが既に登録されています！',
-            'password.min' => 'パスワードは8文字以上入力してください！',
+            'name.required' => '名前を入力してください。',
+            'email.required' => 'メールアドレスを入力してください。',
+            'email.email' => 'メール形式で入力してください。',
+            'email.unique' => 'このメールアドレスは既に登録されています。',
+            'prefectures.required' => '都道府県を入力してください。',
+            'city.required' => '市町村を入力してください。',
+            'password.required' => 'パスワードを入力してください。',
+            'password.min' => 'パスワードは8文字以上入力してください。',
         ];
 
-        return Validator::make($data, $rules, $message);
-
+        return Validator::make($profile, $rules, $message);
     }
 
     /**
@@ -73,10 +81,13 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $profile = $data['profile'];
         return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+            'name' => $profile['name'],
+            'email' => $profile['email'],
+            'password' => Hash::make($profile['password']),
+            'prefectures' => $profile['prefectures'],
+            'city' => $profile['city'],
         ]);
     }
 }
