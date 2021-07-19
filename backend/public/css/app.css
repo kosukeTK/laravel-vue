@@ -42850,6 +42850,16 @@ video {
   opacity: 0;
 }
 
+.btn {
+  border-radius: 5px;
+  background-color: green;
+  padding: 20px;
+  text-align: center;
+  color: white;
+  height: 100px;
+  margin: 50px;
+}
+
 .todoapp {
   background: #fff;
   margin: 130px 0 40px 0;

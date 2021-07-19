@@ -1,4 +1,6 @@
 <template>
+<div>
+  <Header></Header>
   <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <Load :show="state.show"></Load>
     <div class="max-w-md w-full space-y-8">
@@ -76,6 +78,7 @@
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
@@ -85,11 +88,13 @@ import axios from 'axios';
 import { LockClosedIcon } from '@heroicons/vue/solid';
 import prefCity from '../../../storage/app/private/pref_city.json';
 import Load from '../components/Load.vue';
+import Header from '../components/Header.vue';
 
 export default {
   components: {
     LockClosedIcon,
     Load,
+    Header
   },
 
   setup() {

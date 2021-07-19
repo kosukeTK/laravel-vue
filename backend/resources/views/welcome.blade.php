@@ -27,6 +27,7 @@
             bubbleFunc: () => `hsla(${Math.random() * 50}, 100%, 50%, .3)`
         });
     </script>
+    <!-- <script src="http://maps.google.com/maps/api/js?key=AIzaSyDVcINCNOxYqEzXVm1TmUHy8OVeLuDB2mA&language=ja"></script> -->
     <div id="app">
         <script src="{{ mix('/js/app.js') }}"></script>
     </div>

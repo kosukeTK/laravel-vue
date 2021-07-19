@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Header></Header>
     <Load :show="state.show"></Load>
     <!-- <div class="px-4 sm:px-0 flex justify-center">
       <div class="w-full max-w-xs mx-auto">
@@ -99,10 +100,12 @@ import store from '../store/index';
 import prefCity from '../../../storage/app/private/pref_city.json';
 import ImageUtil from '../helpers/imageUtil.js';
 import Load from '../components/Load.vue';
+import Header from '../components/Header.vue';
 
 export default {
   components: {
     Load,
+    Header,
   },
 
   setup() {

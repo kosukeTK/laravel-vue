@@ -2,7 +2,7 @@
   <div class="bg-gray-800">
     <Load :show="state.show"></Load>
     <header class="container mx-auto text-white">
-      <div class="px-48 h-16 flex justify-between items-center">
+      <div class="px-48 h-20 flex justify-between items-center">
         <a href="#" @click="topPage()" class="transition duration-500 ease-in-out transform hover:scale-110 navbar-brand d-flex align-items-center hover:text-white">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
             <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
@@ -26,25 +26,26 @@
             <div class="border-b md:border-none">
               <a href="#" @click="todoPage()" class="transition duration-500 ease-in-out transform hover:scale-110 block text-base px-4 py-2 hover:bg-gray-600 hover:text-white rounded">TODOリスト</a>
             </div>
-            <div v-if="state.loginState == false" class="border-b md:border-none">
+            <div v-if="state.login_status == false" class="border-b md:border-none">
               <a href="#" @click="registerPage()" class="transition duration-500 ease-in-out transform hover:scale-110 block text-base px-8 py-2 hover:bg-gray-600 hover:text-white rounded">会員登録</a>
             </div>
-            <div v-if="state.loginState == false" class="border-b md:border-none">
+            <div v-if="state.login_status == false" class="border-b md:border-none">
               <a href="#" @click="loginPage()" class="transition duration-500 ease-in-out transform hover:scale-110 block text-base px-8 py-2 hover:bg-gray-600 hover:text-white rounded">ログイン</a>
             </div>
-            <div v-if="state.loginState == false" class="my-4">
+            <div v-if="state.login_status == false" class="my-4">
               <button type="button" @click="simpleLogin()" class="transition ease-in-out duration-500 transform hover:scale-110 inline-flex items-center px-2 py-2 ml-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-red-600 hover:bg-red-500 focus:border-red-700 active:bg-red-700">簡単ログイン</button>
             </div>
             <div v-else class="my-4">
-              <!-- <button @click="state.loginState=false" class="px-4 py-2 ml-2 text-base bg-red-500 hover:bg-red-400 hover:text-white rounded">ログアウト</button> -->
+              <!-- <button @click="state.login_status=false" class="px-4 py-2 ml-2 text-base bg-red-500 hover:bg-red-400 hover:text-white rounded">ログアウト</button> -->
               <Menu as="div" class="ml-3 relative">
-                <div>
+                <div flex>
                   <MenuButton class="max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                     <span class="sr-only">Open user menu</span>
-                    <div v-if="state.photo_path">
-                      <img class="h-12 w-12 rounded-full" :src="state.photo_path" />
+                    <div v-if="photoPath">
+                      <img class="h-12 w-12 rounded-full" :src="photoPath" />
                     </div>
                   </MenuButton>
+                  <div>{{ loginName }}さん</div>
                 </div>
                 <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
                   <MenuItems class="z-10 origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
@@ -68,7 +69,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
 import { useRouter } from 'vue-router';
 import store from '../store/index';
 import axios from 'axios';
-import { ref, reactive, onMounted } from 'vue';
+import { reactive, onMounted, computed } from 'vue';
 import Load from '../components/Load.vue';
 
 const profile = ['Profile', 'Sign out'];
@@ -84,16 +85,14 @@ export default {
 
   setup() {
     const state = reactive({
-      guest: [],
-      loginId: '',
-      loginName: '',
-      loginState: false,
+      guest: '',
+      login_status: false,
+      login_id: '',
+      login_name: '',
+      photo_path: '',
       isOpen: false,
       show: false,
-      photo_path: '',
     });
-
-    // const loading = ref(false);
 
     const router = useRouter();
 
@@ -120,7 +119,7 @@ export default {
     const userInfo = (item) => {
       switch (item) {
         case 'Sign out':
-          state.loginState = false;
+          state.login_status = false;
           sessionStorage.removeItem('loginStates');
           router.push({ name: 'top' });
           break;
@@ -139,39 +138,37 @@ export default {
           },
         })
         .then((response) => {
+          state.show = false;
+          state.login_status = true;
           state.guest = response.data.guest;
+          console.log(state.guest);
           store.commit('loginInfo', {
+            loginState: true,
             loginId: state.guest[0].id,
             loginName: state.guest[0].name,
+            photoPath: state.guest[0].photo_path,
           });
+          router.routes[{ redirect: '/' }];
         })
         .catch((error) => {
+          state.show = false;
           console.log(error);
         });
-      state.show = false;
-      state.loginState = true;
     };
+    const loginName = computed(() => {
+      return store.getters.getLoginInfo.loginName;
+    });
+
+    const photoPath = computed(() => {
+      return store.getters.getLoginInfo.photoPath;
+    });
 
     onMounted(() => {
-      if (store.getters.getLoginInfo.loginName.length > 0) {
-        state.loginState = true;
-        state.loginId = store.getters.getLoginInfo.loginId;
-        state.loginName = store.getters.getLoginInfo.loginName;
-        state.show = true;
-        axios
-          .get('/profile/get', {
-            params: {
-              id: state.loginId,
-            },
-          })
-          .then((response) => {
-            state.photo_path = response.data.photo_path;
-            state.show = false;
-          })
-          .catch((error) => {
-            state.show = false;
-            console.log(error.data);
-          });
+      if (store.getters.getLoginInfo.loginState) {
+        state.login_status = true;
+        state.login_id = store.getters.getLoginInfo.loginId;
+        state.login_name = store.getters.getLoginInfo.loginName;
+        state.photo_path = store.getters.getLoginInfo.photoPath;
       }
     });
 
@@ -185,6 +182,8 @@ export default {
       userInfo,
       simpleLogin,
       profile,
+      loginName,
+      photoPath,
     };
   },
 };

@@ -7,7 +7,8 @@ export default createStore({
     // count: 0,
     loginState: false,
     loginId: '',
-    loginName: ''
+    loginName: '',
+    photoPath: '',
   },
   mutations: {
     // increment(state){
@@ -17,15 +18,19 @@ export default createStore({
     //   state.count -= 1
     // },
     loginInfo(state, payload) {
-      state.loginState  = payload.loginState
-      state.loginId     = payload.loginId
-      state.loginName   = payload.loginName
+      state.loginState  = payload.loginState;
+      state.loginId     = payload.loginId;
+      state.loginName   = payload.loginName;
+      state.photoPath   = payload.photoPath;
     }
   },
   actions: {
     // increment({ commit }) {
     //   commit('increment')
-    // }      
+    // }
+    // loginInfo() {
+    //   commit(loginInfo, payload);
+    // }
   },
   getters: {
     getLoginInfo: state => {
@@ -41,7 +46,8 @@ export default createStore({
       paths: [
         'loginState',
         'loginId',
-        'loginName'
+        'loginName',
+        'photoPath'
       ],
       storage: window.sessionStorage
     }
