@@ -8,7 +8,6 @@
       </transition>
     </router-view> -->
     <router-view></router-view>
-    <footer-view></footer-view>
   </div>
 </template>
 <script>

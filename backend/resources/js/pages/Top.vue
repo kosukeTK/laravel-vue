@@ -25,15 +25,16 @@
 <script>
 import 'leaflet/dist/leaflet.css';
 import { reactive, onMounted, computed } from 'vue';
-import axios from 'axios';
 import store from '../store/index';
 import Header from '../components/Header.vue';
 import GoogleMap from '../components/GoogleMap.vue';
+import Footer from '../components/Footer.vue';
 
 export default {
   components: {
     Header,
     GoogleMap,
+    Footer,
   },
 
   setup() {

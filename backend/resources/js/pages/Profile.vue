@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="relative max-w-full max-h-full z-0">
     <Header></Header>
     <Load :show="state.show"></Load>
     <!-- <div class="px-4 sm:px-0 flex justify-center">
@@ -101,11 +101,13 @@ import prefCity from '../../../storage/app/private/pref_city.json';
 import ImageUtil from '../helpers/imageUtil.js';
 import Load from '../components/Load.vue';
 import Header from '../components/Header.vue';
+import Footer from '../components/Footer.vue';
 
 export default {
   components: {
     Load,
     Header,
+    Footer,
   },
 
   setup() {

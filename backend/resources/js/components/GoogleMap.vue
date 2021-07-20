@@ -76,9 +76,7 @@ export default {
       router.push({
         name: 'albumDetail',
         params: {
-          year: moment().format('YYYY'),
-          month: moment().format('MM'),
-          day: moment().format('DD'),
+          date: moment().format('YYYY-MM-DD'),
           address: address,
         },
       });
