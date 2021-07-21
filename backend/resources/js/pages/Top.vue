@@ -12,7 +12,7 @@
           </div>
         </div>
         <div class="block w-full mx-auto mt-6 md:mt-0 relative">
-          <img src="/images/object/12.svg" class="max-w-xs md:max-w-2xl m-auto" />
+          <!-- <img src="/images/object/12.svg" class="max-w-xs md:max-w-2xl m-auto" /> -->
         </div>
       </div>
     </div>
@@ -28,13 +28,11 @@ import { reactive, onMounted, computed } from 'vue';
 import store from '../store/index';
 import Header from '../components/Header.vue';
 import GoogleMap from '../components/GoogleMap.vue';
-import Footer from '../components/Footer.vue';
 
 export default {
   components: {
     Header,
     GoogleMap,
-    Footer,
   },
 
   setup() {

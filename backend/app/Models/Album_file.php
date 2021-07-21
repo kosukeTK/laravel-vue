@@ -9,5 +9,10 @@ class Album_file extends Model
 {
     use HasFactory;
 
-    //protected $table = 'album_files';
+    protected $fillable = [
+        'user_id',
+        'album_no',
+        'file_path',
+        'file_name',
+    ];
 }

@@ -75,11 +75,10 @@ import axios from 'axios';
 import ImageUtil from '../helpers/imageUtil.js';
 import { useRoute } from 'vue-router';
 import Header from '../components/Header.vue';
-import Footer from '../components/Footer.vue';
+import store from '../store/index';
 export default {
   components: {
     Header,
-    Footer,
   },
 
   setup() {
@@ -173,6 +172,7 @@ export default {
       state.files.forEach((file, index) => {
         form.append('file[' + index + ']', file);
       });
+      form.append('id', store.getters.getLoginInfo.loginId);
       form.append('date', state.form.date);
       form.append('address', state.form.address);
       form.append('title', state.form.title);

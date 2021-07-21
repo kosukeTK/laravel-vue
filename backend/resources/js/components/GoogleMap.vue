@@ -90,7 +90,7 @@ export default {
       //googlemapインスタンス生成
       const map = new state.google.maps.Map(refMap.value, state.mapConfig);
       //markerインスタンス生成
-      const marker = new state.google.maps.Marker({ position: 0 });
+      const marker = new state.google.maps.Marker();
       //googlemapのclickイベント
       map.addListener('click', (e) => {
         makerPlace(e.latLng, map, marker);

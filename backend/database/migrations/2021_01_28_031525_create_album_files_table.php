@@ -16,11 +16,12 @@ class CreateAlbumFilesTable extends Migration
         Schema::create('album_files', function (Blueprint $table) {
             $table->bigInteger('user_id');
             $table->bigInteger('album_no');
-            $table->string('file_path',255)->unique();
+            $table->string('file_path', 255)->unique();
+            $table->string('file_name', 100);
             $table->timestamps();
 
-            $table->primary(['user_id', 'album_no']);
-        });    
+            $table->primary(['user_id', 'album_no', 'file_path']);
+        });
     }
 
     /**

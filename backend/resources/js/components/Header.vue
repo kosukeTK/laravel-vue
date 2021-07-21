@@ -38,17 +38,20 @@
             <div v-else class="my-4">
               <!-- <button @click="state.login_status=false" class="px-4 py-2 ml-2 text-base bg-red-500 hover:bg-red-400 hover:text-white rounded">ログアウト</button> -->
               <Menu as="div" class="ml-3 relative">
-                <div flex>
-                  <MenuButton class="max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
-                    <span class="sr-only">Open user menu</span>
-                    <div v-if="photoPath">
-                      <img class="h-12 w-12 rounded-full" :src="photoPath" />
-                    </div>
-                  </MenuButton>
+                <MenuButton class="max-w-xs bg-gray-800 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                  <span class="sr-only">Open user menu</span>
+                  <div v-if="photoPath">
+                    <img class="h-12 w-12 mx-auto rounded-full border border-white" :src="photoPath" />
+                  </div>
+                  <div v-else>
+                    <svg class="h-12 w-12 mx-auto rounded-full border border-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  </div>
                   <div>{{ loginName }}さん</div>
-                </div>
+                </MenuButton>
                 <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
-                  <MenuItems class="z-10 origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  <MenuItems class="z-20 origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <MenuItem v-for="item in profile" :key="item" v-slot="{ active }">
                       <a href="#" @click="userInfo(item)" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">{{ item }}</a>
                     </MenuItem>

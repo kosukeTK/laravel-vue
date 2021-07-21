@@ -15,13 +15,13 @@ class CreateAlbumsTable extends Migration
     {
         Schema::create('albums', function (Blueprint $table) {
             $table->smallInteger('year');
-            $table->smallInteger('month'); 
-            $table->smallInteger('day'); 
+            $table->smallInteger('month');
+            $table->smallInteger('day');
             $table->bigInteger('user_id');
             $table->bigInteger('album_no');
-            $table->string('user_name',50);
-            $table->string('album_name',50)->nullable();
-            $table->string('comment',100)->nullable();
+            $table->string('address', 50);
+            $table->string('title', 50);
+            $table->string('comment', 100)->nullable();
             $table->boolean('sakujo_flg')->default(false);
             $table->timestamps();
 
