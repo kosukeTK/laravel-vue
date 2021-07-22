@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/vue@next"></script>
+  <title>COINS</title>
+</head>
+<body>
+<div id="app">
+<div class="relative max-w-full max-h-full z-0">
+<Header></Header>
+<Load :show="state.show"></Load>
+<section class="text-gray-600 body-font overflow-hidden">
+  <div class="container px-5 py-24 mx-auto">
+    <div v-for="(form, index) in state.form" :key="index" class="-my-8 divide-y-2 divide-gray-100">
+      <div @click="albumDetailList(form.user_id, form.album_no)" class="py-8 flex flex-wrap md:flex-nowrap">
+        <div class="md:w-64 md:mb-0 mb-6 flex-shrink-0 flex flex-col mr-10">
+          <img class="w-full h-full" :src="form.album_path" />
+        </div>
+        <div class="md:flex-grow">
+          <p class="text-lg font-medium text-gray-900 title-font mb-2">{{ form.date }}</p>
+          <p class="text-2xl font-medium text-gray-900 title-font mb-2">{{ form.title }}</p>
+          <p class="text-base font-medium text-gray-900 title-font mb-2">{{ form.address }}</p>
+          <p class="leading-relaxed">Glossier echo park pug, church-key sartorial biodiesel vexillologist pop-up snackwave ramps cornhole. Marfa 3 wolf moon party messenger bag selfies, poke vaporware kombucha lumbersexual pork belly polaroid hoodie portland craft beer.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+</body>
+</html>
+
+<script>
+import { reactive, onMounted } from 'vue';
+import axios from 'axios';
+import store from '../store/index';
+import Header from '../components/Header.vue';
+import { useRoute } from 'vue-router';
+
+export default {
+
+  components: {
+    Load,
+    Header,
+  },
+
+  setup() {
+    
+    const route = useRoute();
+    
+    const state = Vue.reactive({
+      show: false,
+      form: []
+    })
+    
+    const albumDetailList = (user_id, album_no) => {
+      state.show = true;
+      route.push({
+        name: 'albumDetailList',
+        params: {
+          user_id,
+          album_no
+        }
+      })
+    }
+    
+    onMounted(() => {
+      axios.get('/albumList/get' {
+        params: {
+          id: store.getters.getLoginInfo.loginId,
+        }
+      })
+      .then((response) => {
+        state.form = response.data;
+        state.show = false;
+      })
+      .catch((error) => {
+        state.show = false;
+        console.log(error.data);
+      })
+    })
+    
+    return{
+      state,
+      albumDetailList,
+    }
+  
+  }
+}
+</script>
