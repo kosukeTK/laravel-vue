@@ -44,9 +44,6 @@ class ProfileController extends Controller
             'photo_cover'   => $request->photo_cover,
             'photo_cover_path'   => $cfilePath
         ]);
-
-
-
-        return;
+        return ['id' => $request->id, 'name'  => $request->name, 'photo_path' => $filePath];
     }
 }

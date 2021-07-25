@@ -88,6 +88,7 @@ export default {
               loginState: response.data.success,
               loginId: response.data.id,
               loginName: response.data.name,
+              photoPath: response.data.photo_path,
             });
             router.push({ name: 'top' });
           } else {

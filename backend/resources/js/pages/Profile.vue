@@ -101,13 +101,11 @@ import prefCity from '../../../storage/app/private/pref_city.json';
 import ImageUtil from '../helpers/imageUtil.js';
 import Load from '../components/Load.vue';
 import Header from '../components/Header.vue';
-import Footer from '../components/Footer.vue';
 
 export default {
   components: {
     Load,
     Header,
-    Footer,
   },
 
   setup() {
@@ -191,8 +189,14 @@ export default {
       axios
         .post('/profile/update', form, config)
         .then((response) => {
-          console.log(response);
+          console.log(response.data);
           state.show = false;
+          store.commit('loginInfo', {
+            loginState: true,
+            loginId: response.data.id,
+            loginName: response.data.name,
+            photoPath: response.data.photo_path,
+          });
         })
         .catch((error) => {
           console.log(error);

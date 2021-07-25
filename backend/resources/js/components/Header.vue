@@ -21,27 +21,31 @@
         <div :class="state.isOpen ? 'hidden' : 'block'">
           <div class="md:flex md:justify-between md:items-center space-x-8">
             <div class="border-b md:border-none">
-              <a href="#" @click="albumPage()" class="transition duration-500 ease-in-out transform hover:scale-110 block text-base px-8 py-2 hover:bg-gray-600 hover:text-white rounded">探す</a>
+              <a href="#" @click="albumPage()" class="transition duration-500 ease-in-out transform hover:scale-110 block text-base px-8 py-2 hover:bg-gray-600 hover:text-white rounded">アルバム</a>
             </div>
             <div class="border-b md:border-none">
-              <a href="#" @click="todoPage()" class="transition duration-500 ease-in-out transform hover:scale-110 block text-base px-4 py-2 hover:bg-gray-600 hover:text-white rounded">TODOリスト</a>
+              <a href="#" @click="profilePage()" class="transition duration-500 ease-in-out transform hover:scale-110 block text-base px-8 py-2 hover:bg-gray-600 hover:text-white rounded">プロフィール</a>
             </div>
-            <div v-if="state.login_status == false" class="border-b md:border-none">
+            <!-- <div class="border-b md:border-none">
+              <a href="#" @click="todoPage()" class="transition duration-500 ease-in-out transform hover:scale-110 block text-base px-4 py-2 hover:bg-gray-600 hover:text-white rounded">TODOリスト</a>
+            </div> -->
+            <div v-if="loginState == false" class="border-b md:border-none">
               <a href="#" @click="registerPage()" class="transition duration-500 ease-in-out transform hover:scale-110 block text-base px-8 py-2 hover:bg-gray-600 hover:text-white rounded">会員登録</a>
             </div>
-            <div v-if="state.login_status == false" class="border-b md:border-none">
+            <div v-if="loginState == false" class="border-b md:border-none">
               <a href="#" @click="loginPage()" class="transition duration-500 ease-in-out transform hover:scale-110 block text-base px-8 py-2 hover:bg-gray-600 hover:text-white rounded">ログイン</a>
             </div>
-            <div v-if="state.login_status == false" class="my-4">
+            <div v-if="loginState == false" class="my-4">
               <button type="button" @click="simpleLogin()" class="transition ease-in-out duration-500 transform hover:scale-110 inline-flex items-center px-2 py-2 ml-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-red-600 hover:bg-red-500 focus:border-red-700 active:bg-red-700">簡単ログイン</button>
             </div>
             <div v-else class="my-4">
-              <!-- <button @click="state.login_status=false" class="px-4 py-2 ml-2 text-base bg-red-500 hover:bg-red-400 hover:text-white rounded">ログアウト</button> -->
+              <!-- <button @click="loginState=false" class="px-4 py-2 ml-2 text-base bg-red-500 hover:bg-red-400 hover:text-white rounded">ログアウト</button> -->
               <Menu as="div" class="ml-3 relative">
-                <MenuButton class="max-w-xs bg-gray-800 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                <MenuButton class="max-w-xs bg-gray-800 rounded-full text-sm outline-none focus:outline-none">
                   <span class="sr-only">Open user menu</span>
                   <div v-if="photoPath">
                     <img class="h-12 w-12 mx-auto rounded-full border border-white" :src="photoPath" />
+                    <!-- <img class="h-12 w-12 mx-auto rounded-full border border-white" src="storage/1/qw.jpg" /> -->
                   </div>
                   <div v-else>
                     <svg class="h-12 w-12 mx-auto rounded-full border border-white" fill="currentColor" viewBox="0 0 24 24">
@@ -108,7 +112,16 @@ export default {
     };
 
     const albumPage = () => {
-      router.push({ name: 'album' });
+      router.push({
+        name: 'albumList',
+        params: {
+          user_id: loginId.value,
+        },
+      });
+    };
+
+    const profilePage = () => {
+      router.push({ name: 'profile' });
     };
 
     const todoPage = () => {
@@ -122,8 +135,13 @@ export default {
     const userInfo = (item) => {
       switch (item) {
         case 'Sign out':
-          state.login_status = false;
-          sessionStorage.removeItem('loginStates');
+          // sessionStorage.removeItem('loginStates');
+          store.commit('loginInfo', {
+            loginState: false,
+            loginId: '',
+            loginName: '',
+            photoPath: '',
+          });
           router.push({ name: 'top' });
           break;
         case 'Profile':
@@ -142,7 +160,7 @@ export default {
         })
         .then((response) => {
           state.show = false;
-          state.login_status = true;
+          // loginState = true;
           state.guest = response.data.guest;
           console.log(state.guest);
           store.commit('loginInfo', {
@@ -151,29 +169,35 @@ export default {
             loginName: state.guest[0].name,
             photoPath: state.guest[0].photo_path,
           });
-          router.routes[{ redirect: '/' }];
         })
         .catch((error) => {
           state.show = false;
           console.log(error);
         });
     };
+
+    const loginState = computed(() => {
+      return store.getters.getLoginInfo.loginState;
+    });
+    const loginId = computed(() => {
+      return store.getters.getLoginInfo.loginId;
+    });
     const loginName = computed(() => {
       return store.getters.getLoginInfo.loginName;
     });
-
     const photoPath = computed(() => {
       return store.getters.getLoginInfo.photoPath;
     });
 
-    onMounted(() => {
-      if (store.getters.getLoginInfo.loginState) {
-        state.login_status = true;
-        state.login_id = store.getters.getLoginInfo.loginId;
-        state.login_name = store.getters.getLoginInfo.loginName;
-        state.photo_path = store.getters.getLoginInfo.photoPath;
-      }
-    });
+    // onMounted(() => {
+    // console.log(photoPath.value);
+    //   if (store.getters.getLoginInfo.loginState) {
+    //     state.login_status = true;
+    //     state.login_id = store.getters.getLoginInfo.loginId;
+    //     state.login_name = store.getters.getLoginInfo.loginName;
+    //     state.photo_path = store.getters.getLoginInfo.photoPath;
+    //   }
+    // });
 
     return {
       state,
@@ -181,10 +205,13 @@ export default {
       loginPage,
       albumPage,
       todoPage,
+      profilePage,
       registerPage,
       userInfo,
       simpleLogin,
       profile,
+      loginState,
+      loginId,
       loginName,
       photoPath,
     };

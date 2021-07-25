@@ -1,12 +1,13 @@
 import {createRouter, createWebHistory} from 'vue-router';
 
 import Top from './pages/Top.vue';
-import Album from './pages/Album.vue';
-import AlbumDetail from './pages/AlbumDetail.vue';
-import Todo from './pages/Todo.vue';
 import Login from './pages/Login.vue';
 import Register from './pages/Register.vue';
 import Profile from './pages/Profile.vue';
+import albumUpload from './pages/AlbumUpload.vue';
+import AlbumList from './pages/AlbumList.vue';
+import AlbumListDetail from './pages/AlbumListDetail.vue';
+import Todo from './pages/Todo.vue';
 import store from './store/index.js';
 
 const routes = [
@@ -29,15 +30,21 @@ const routes = [
     meta: {requiresGuest: true}
   },
   {
-    path: '/album',
-    name: 'album',
-    component: Album,
+    path: '/albumList',
+    name: 'albumList',
+    component: AlbumList,
     meta: {requiresAuth: true}
   },
   {
-    path: '/album/albumDetail',
-    name: 'albumDetail',
-    component: AlbumDetail,
+    path: '/albumListDetail',
+    name: 'albumListDetail',
+    component: AlbumListDetail,
+    meta: {requiresAuth: true}
+  },
+  {
+    path: '/albumUpload',
+    name: 'albumUpload',
+    component: albumUpload,
     meta: {requiresAuth: true}
   },
   {
@@ -62,7 +69,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   //ログイン状態
   if (to.meta.requiresAuth) {
-    if (store.getters.getLoginInfo.loginName.length > 0) {
+    if (store.getters.getLoginInfo.loginState) {
         return next();
     } else {
         return next({name: 'login'});

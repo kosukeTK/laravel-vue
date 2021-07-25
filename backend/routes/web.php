@@ -50,16 +50,14 @@ Route::get('todo/update', [TodoController::class, 'update']);
 Route::get('todo/delete', [TodoController::class, 'delete']);
 //メール
 Route::get('/mail', [MailSendController::class, 'send']);
-//アルバム
-Route::post('album/albumDetail/upload', [AlbumController::class, 'upload']);
-// Route::post('album/albumDetail/upload', function(){
+//アルバム投稿
+Route::post('albumUpload/upload', [AlbumController::class, 'upload']);
+//アルバム表示
+Route::get('albumList/get', [AlbumController::class, 'get']);
+Route::get('albumListDetail/getDetail', [AlbumController::class, 'getDetail']);
+
+// Route::post('album/albumUpload/upload', function(){
 //     dd(request()->all());
 //});
 //カレンダー
 Route::get('album/albumInfo', [CalendarController::class, 'albumInfo']);
-
-// Route::post('regist/reg', function(){
-//     dd(request()->all());
-// });
-//地図
-Route::get('/json', [JsonController::class, 'getJson']);

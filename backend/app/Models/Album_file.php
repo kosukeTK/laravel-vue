@@ -14,5 +14,6 @@ class Album_file extends Model
         'album_no',
         'file_path',
         'file_name',
+        'head_flg',
     ];
 }

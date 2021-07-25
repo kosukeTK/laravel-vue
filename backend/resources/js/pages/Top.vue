@@ -16,7 +16,7 @@
         </div>
       </div>
     </div>
-    <div v-show="loginStates" class="containerrounded-lg mx-auto w-full relative flex items-center" style="height: 1080px">
+    <div v-show="loginState" class="containerrounded-lg mx-auto w-full relative flex items-center" style="height: 1080px">
       <GoogleMap></GoogleMap>
     </div>
   </div>
@@ -43,20 +43,21 @@ export default {
       login_name: '',
     });
 
-    const loginStates = computed(() => {
+    const loginState = computed(() => {
       return store.getters.getLoginInfo.loginState;
     });
 
-    onMounted(() => {
-      if (store.getters.getLoginInfo.loginState) {
-        state.login_status = true;
-        state.login_id = store.getters.getLoginInfo.loginId;
-        state.login_name = store.getters.getLoginInfo.loginName;
-      }
-    });
+    // onMounted(() => {
+    //   if (store.getters.getLoginInfo.loginState) {
+    //     state.login_status = true;
+    //     state.login_id = store.getters.getLoginInfo.loginId;
+    //     state.login_name = store.getters.getLoginInfo.loginName;
+    //   }
+    // });
+
     return {
       state,
-      loginStates,
+      loginState,
     };
   },
 };

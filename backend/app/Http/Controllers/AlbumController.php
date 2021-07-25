@@ -34,10 +34,17 @@ class AlbumController extends Controller
         ]);
 
         $files = $request->file('file');
-        foreach ($files as $file) {
+        foreach ($files as $key => $file) {
             //画像保存
             $file_name = $file->getClientOriginalName();
             $file_path = $file->storeAs('public', $file_name);
+            $file_path = str_replace('public', 'storage', $file_path);
+            //最初の画像をサムネイルにする
+            if ($key === 1) {
+                $head_flg = 1;
+            } else {
+                $head_flg = 0;
+            }
 
             //album_filesテーブルINSERT
             $album_file = Album_file::Create([
@@ -45,6 +52,7 @@ class AlbumController extends Controller
                 'album_no'   => intval($album_no),
                 'file_path'  => $file_path,
                 'file_name'  => $file_name,
+                'head_flg'   => $head_flg
             ]);
         };
         $ret = ['album' => $album, 'album_file' => $album_file];
@@ -55,8 +63,18 @@ class AlbumController extends Controller
     {
         $album = Album::Join('album_files', 'albums.user_id', '=', 'album_files.user_id')
             ->where('album_files.user_id', $request->id)
+            ->where('album_files.head_flg', 1)
             ->get();
-        dd($album);
+        //dd($album);
+        return $album;
+    }
+    public function getDetail(Request $request)
+    {
+        $album = Album::Join('album_files', 'albums.user_id', '=', 'album_files.user_id')
+            ->where('album_files.user_id', $request->user_id)
+            ->where('album_files.album_no', $request->album_no)
+            ->get();
+        //dd($album);
         return $album;
     }
 
